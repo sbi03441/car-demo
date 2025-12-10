@@ -12,6 +12,7 @@ import BrandsPage from "./pages/BrandsPage";
 import ShowroomPage from "./pages/ShowroomPage";
 import FAQPage from "./pages/FAQPage";
 import MyQuotesPage from "./pages/MyQuotesPage";
+import MyPage from "./pages/MyPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import "./App.css";
@@ -59,6 +60,14 @@ function AppContent() {
                 element={
                   <ProtectedRoute>
                     <MyQuotesPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/my-page"
+                element={
+                  <ProtectedRoute>
+                    <MyPage />
                   </ProtectedRoute>
                 }
               />

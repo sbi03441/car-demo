@@ -68,7 +68,14 @@ export default function Navigation() {
           {isAuthenticated ? (
             // 로그인 상태
             <>
-              <span className="user-name">👤 {user?.name || user?.NAME}</span>
+              <NavLink
+                to="/my-page"
+                className={({ isActive }) =>
+                  isActive ? "mypage-button active" : "mypage-button"
+                }
+              >
+                👤 마이페이지
+              </NavLink>
               <button className="logout-button" onClick={handleLogout}>
                 🚪 로그아웃
               </button>

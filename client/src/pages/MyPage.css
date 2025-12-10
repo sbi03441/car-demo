@@ -1,0 +1,179 @@
+.mypage-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 40px 20px;
+}
+
+.mypage-container {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 600px;
+  padding: 40px;
+  animation: slideUp 0.4s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mypage-header {
+  text-align: center;
+  margin-bottom: 40px;
+  padding-bottom: 24px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.mypage-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 8px 0;
+}
+
+.mypage-header p {
+  font-size: 0.95rem;
+  color: #666;
+  margin: 0;
+}
+
+.mypage-content {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.info-section h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 20px 0;
+}
+
+.info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.info-item label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-value {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #1a1a1a;
+  padding: 12px 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.action-section {
+  padding-top: 24px;
+  border-top: 2px solid #f0f0f0;
+  display: flex;
+  justify-content: center;
+}
+
+.logout-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 12px 32px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.2);
+}
+
+.logout-btn:hover {
+  background: #c82333;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+  transform: translateY(-1px);
+}
+
+.logout-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .mypage-page {
+    padding: 20px;
+  }
+
+  .mypage-container {
+    padding: 32px 24px;
+  }
+
+  .mypage-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .mypage-header p {
+    font-size: 0.875rem;
+  }
+
+  .info-section h2 {
+    font-size: 1.125rem;
+  }
+
+  .info-value {
+    font-size: 0.95rem;
+    padding: 10px 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .mypage-page {
+    padding: 16px;
+  }
+
+  .mypage-container {
+    padding: 24px 20px;
+  }
+
+  .mypage-header {
+    margin-bottom: 32px;
+    padding-bottom: 20px;
+  }
+
+  .mypage-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .mypage-content {
+    gap: 24px;
+  }
+
+  .logout-btn {
+    width: 100%;
+    padding: 14px;
+  }
+}
