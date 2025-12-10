@@ -1,0 +1,691 @@
+{
+	"info": {
+		"name": "Car Demo API",
+		"description": "Car Demo 프로젝트의 모든 API 엔드포인트",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "회원가입",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"user@test.com\",\n  \"password\": \"123456\",\n  \"name\": \"테스트 사용자\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"description": "새로운 사용자 계정을 생성합니다."
+					}
+				},
+				{
+					"name": "로그인",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set(\"token\", jsonData.data.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"user@test.com\",\n  \"password\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "로그인하고 JWT 토큰을 받습니다. 토큰은 자동으로 저장됩니다."
+					}
+				},
+				{
+					"name": "내 정보 조회",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/me",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"me"
+							]
+						},
+						"description": "현재 로그인한 사용자의 정보를 조회합니다."
+					}
+				}
+			]
+		},
+		{
+			"name": "Cars",
+			"item": [
+				{
+					"name": "차량 목록 조회",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/cars",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"cars"
+							]
+						},
+						"description": "모든 차량 목록을 조회합니다."
+					}
+				},
+				{
+					"name": "차량 상세 조회",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/cars/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"cars",
+								"1"
+							]
+						},
+						"description": "특정 차량의 상세 정보를 조회합니다."
+					}
+				},
+				{
+					"name": "색상 목록 조회",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/cars/data/colors",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"cars",
+								"data",
+								"colors"
+							]
+						},
+						"description": "모든 색상 옵션을 조회합니다."
+					}
+				},
+				{
+					"name": "옵션 목록 조회",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/cars/data/options",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"cars",
+								"data",
+								"options"
+							]
+						},
+						"description": "모든 추가 옵션을 조회합니다."
+					}
+				}
+			]
+		},
+		{
+			"name": "Quotes",
+			"item": [
+				{
+					"name": "견적 저장 (비로그인)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"carId\": 1,\n  \"colorCode\": \"white\",\n  \"optionCodes\": [\"sunroof\", \"hud\"],\n  \"discountName\": \"프로모션 할인\",\n  \"discountAmount\": 1000000,\n  \"deliveryRegion\": \"서울\",\n  \"deliveryFee\": 200000,\n  \"subtotal\": 68500000,\n  \"total\": 67700000\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/quotes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"quotes"
+							]
+						},
+						"description": "로그인하지 않고 견적을 저장합니다."
+					}
+				},
+				{
+					"name": "견적 저장 (로그인)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"carId\": 2,\n  \"colorCode\": \"black\",\n  \"optionCodes\": [\"sound\"],\n  \"discountName\": \"회원 할인\",\n  \"discountAmount\": 2000000,\n  \"deliveryRegion\": \"경기\",\n  \"deliveryFee\": 300000,\n  \"subtotal\": 79700000,\n  \"total\": 78000000\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/quotes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"quotes"
+							]
+						},
+						"description": "로그인 후 견적을 저장합니다. userId가 자동으로 연결됩니다."
+					}
+				},
+				{
+					"name": "내 견적 목록 조회",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/quotes/my",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"quotes",
+								"my"
+							]
+						},
+						"description": "로그인한 사용자의 모든 견적을 조회합니다."
+					}
+				},
+				{
+					"name": "특정 견적 조회",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/quotes/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"quotes",
+								"1"
+							]
+						},
+						"description": "특정 견적의 상세 정보를 조회합니다."
+					}
+				},
+				{
+					"name": "견적 삭제",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/quotes/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"quotes",
+								"1"
+							]
+						},
+						"description": "견적을 삭제합니다. 본인의 견적만 삭제 가능합니다."
+					}
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Cars",
+					"item": [
+						{
+							"name": "차량 생성",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Hyundai Palisade\",\n  \"basePrice\": 45000000,\n  \"imageUrl\": \"https://example.com/palisade.jpg\",\n  \"brand\": \"Hyundai\",\n  \"engine\": \"3.8L V6\",\n  \"power\": \"295마력\",\n  \"fuelEfficiency\": \"9.0km/L\",\n  \"safetyRating\": \"5★\",\n  \"dimensions\": \"4,980 × 1,975 × 1,750mm\",\n  \"description\": \"대형 프리미엄 SUV\",\n  \"features\": [\"스마트 크루즈 컨트롤\", \"전방 충돌방지 보조\"]\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/admin/cars",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"cars"
+									]
+								}
+							}
+						},
+						{
+							"name": "차량 수정",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Genesis GV80 (Updated)\",\n  \"basePrice\": 66000000,\n  \"imageUrl\": \"https://example.com/gv80.jpg\",\n  \"brand\": \"Genesis\",\n  \"engine\": \"3.5L V6 터보\",\n  \"power\": \"380마력\",\n  \"fuelEfficiency\": \"9.2km/L\",\n  \"safetyRating\": \"5★\",\n  \"dimensions\": \"4,945 × 1,975 × 1,715mm\",\n  \"description\": \"업데이트된 설명\",\n  \"features\": [\"새로운 기능\"]\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/admin/cars/1",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"cars",
+										"1"
+									]
+								}
+							}
+						},
+						{
+							"name": "차량 삭제",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/admin/cars/7",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"cars",
+										"7"
+									]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "Colors",
+					"item": [
+						{
+							"name": "색상 생성",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"code\": \"red\",\n  \"name\": \"레드\",\n  \"hex\": \"#ff0000\",\n  \"price\": 1000000\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/admin/colors",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"colors"
+									]
+								}
+							}
+						},
+						{
+							"name": "색상 수정",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"code\": \"red\",\n  \"name\": \"딥 레드\",\n  \"hex\": \"#cc0000\",\n  \"price\": 1200000\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/admin/colors/5",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"colors",
+										"5"
+									]
+								}
+							}
+						},
+						{
+							"name": "색상 삭제",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/admin/colors/5",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"colors",
+										"5"
+									]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "Options",
+					"item": [
+						{
+							"name": "옵션 생성",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"code\": \"leather\",\n  \"name\": \"가죽 시트\",\n  \"price\": 2000000\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/admin/options",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"options"
+									]
+								}
+							}
+						},
+						{
+							"name": "옵션 수정",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"code\": \"leather\",\n  \"name\": \"프리미엄 가죽 시트\",\n  \"price\": 2500000\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/admin/options/4",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"options",
+										"4"
+									]
+								}
+							}
+						},
+						{
+							"name": "옵션 삭제",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/admin/options/4",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"options",
+										"4"
+									]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "모든 견적 조회",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/quotes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"quotes"
+							]
+						},
+						"description": "모든 사용자의 견적을 조회합니다."
+					}
+				},
+				{
+					"name": "모든 사용자 조회",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"users"
+							]
+						},
+						"description": "모든 사용자 목록을 조회합니다."
+					}
+				},
+				{
+					"name": "사용자 삭제",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/users/2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"users",
+								"2"
+							]
+						},
+						"description": "특정 사용자를 삭제합니다."
+					}
+				}
+			]
+		}
+	]
+}
