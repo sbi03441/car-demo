@@ -23,6 +23,15 @@ export default function ConfigPage() {
     }
   }, [currentCar, nav]);
 
+  // 페이지 진입 시 선택 초기화 (첫 번째 색상, 옵션 없음)
+  useEffect(() => {
+    if (colors.length > 0) {
+      setSelectedColorCode(colors[0].code); // 첫 번째 색상
+    }
+    setSelectedOptionCodes([]); // 옵션 전부 해제
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // 페이지 마운트 시 한 번만 실행
+
   const toggleOption = (code) => {
     setSelectedOptionCodes((prev) =>
       prev.includes(code) ? prev.filter((c) => c !== code) : [...prev, code]
