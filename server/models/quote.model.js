@@ -226,11 +226,20 @@ export async function deleteQuote(id) {
   await execute(sql, { id });
 }
 
+/**
+ * 사용자의 모든 견적 삭제
+ */
+export async function deleteQuotesByUserId(userId) {
+  const sql = 'DELETE FROM quotes WHERE user_id = :userId';
+  await execute(sql, { userId });
+}
+
 export default {
   createQuote,
   getQuoteById,
   getQuotesByUserId,
   getAllQuotes,
   updateQuote,
-  deleteQuote
+  deleteQuote,
+  deleteQuotesByUserId
 };

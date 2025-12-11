@@ -3,12 +3,30 @@ import { useNavigate } from 'react-router-dom';
 import './MyPage.css';
 
 export default function MyPage() {
-  const { user, logout } = useAuth();
+  const { user, logout, deleteAccount } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
     navigate('/');
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!window.confirm('정말로 계정을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+      return;
+    }
+
+    try {
+      const result = await deleteAccount();
+      if (result.success) {
+        alert('계정이 삭제되었습니다.');
+        navigate('/');
+      } else {
+        alert(result.message || '계정 삭제에 실패했습니다.');
+      }
+    } catch (error) {
+      alert('계정 삭제 중 오류가 발생했습니다.');
+    }
   };
 
   return (
@@ -43,6 +61,9 @@ export default function MyPage() {
           <div className="action-section">
             <button className="logout-btn" onClick={handleLogout}>
               로그아웃
+            </button>
+            <button className="delete-account-btn" onClick={handleDeleteAccount}>
+              회원 탈퇴
             </button>
           </div>
         </div>

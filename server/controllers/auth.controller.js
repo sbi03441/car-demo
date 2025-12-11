@@ -1,4 +1,5 @@
-import { findUserByEmail, createUser, verifyPassword } from '../models/user.model.js';
+import { findUserByEmail, createUser, verifyPassword, deleteUser } from '../models/user.model.js';
+import { deleteQuotesByUserId } from '../models/quote.model.js';
 import { generateToken } from '../utils/jwt.util.js';
 import { validationResult } from 'express-validator';
 
@@ -156,8 +157,35 @@ export async function getMe(req, res) {
   }
 }
 
+/**
+ * 회원 탈퇴
+ */
+export async function deleteUserAccount(req, res) {
+  try {
+    const userId = req.user.userId;
+
+    // 1. 사용자의 모든 견적 삭제 (quote_options는 CASCADE로 자동 삭제됨)
+    await deleteQuotesByUserId(userId);
+
+    // 2. 사용자 계정 삭제
+    await deleteUser(userId);
+
+    res.status(200).json({
+      success: true,
+      message: '계정이 삭제되었습니다.'
+    });
+  } catch (error) {
+    console.error('회원 탈퇴 오류:', error);
+    res.status(500).json({
+      success: false,
+      message: '회원 탈퇴 중 오류가 발생했습니다.'
+    });
+  }
+}
+
 export default {
   register,
   login,
-  getMe
+  getMe,
+  deleteUserAccount
 };

@@ -1,5 +1,5 @@
 import express from 'express';
-import { register, login, getMe } from '../controllers/auth.controller.js';
+import { register, login, getMe, deleteUserAccount } from '../controllers/auth.controller.js';
 import { authenticateToken } from '../middleware/auth.middleware.js';
 import { body } from 'express-validator';
 
@@ -37,5 +37,11 @@ router.post(
  * 현재 로그인한 사용자 정보 조회
  */
 router.get('/me', authenticateToken, getMe);
+
+/**
+ * DELETE /api/auth/me
+ * 회원 탈퇴
+ */
+router.delete('/me', authenticateToken, deleteUserAccount);
 
 export default router;

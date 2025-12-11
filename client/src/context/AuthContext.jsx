@@ -119,6 +119,30 @@ export const AuthProvider = ({ children }) => {
     setError(null);
   };
 
+  // 회원 탈퇴
+  const deleteAccount = async () => {
+    try {
+      setError(null);
+      setLoading(true);
+
+      const response = await authService.deleteAccount();
+
+      if (response.success) {
+        setUser(null);
+        return { success: true };
+      } else {
+        setError(response.message || '회원 탈퇴에 실패했습니다.');
+        return { success: false, message: response.message };
+      }
+    } catch (err) {
+      const errorMsg = err.response?.data?.message || '회원 탈퇴 중 오류가 발생했습니다.';
+      setError(errorMsg);
+      return { success: false, message: errorMsg };
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Context 값
   const value = {
     user,
@@ -129,6 +153,7 @@ export const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
+    deleteAccount,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

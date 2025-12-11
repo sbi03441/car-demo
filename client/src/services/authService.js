@@ -93,3 +93,17 @@ export const isAdmin = () => {
   const user = getCurrentUser();
   return user?.isAdmin === 1;
 };
+
+/**
+ * 회원 탈퇴
+ */
+export const deleteAccount = async () => {
+  const response = await api.delete('/auth/me');
+
+  // 계정 삭제 성공 시 로컬 스토리지 정리
+  if (response.data.success) {
+    logout();
+  }
+
+  return response.data;
+};
