@@ -25,10 +25,15 @@ function CarCard({ car, selected, onClick, onDetailClick }) {
 
 export default function ModelPage() {
   const nav = useNavigate();
-  const { cars, selectedCarId, setSelectedCarId } = useQuote();
+  const { cars, selectedCarId, setSelectedCarId, colors, setSelectedColorCode, setSelectedOptionCodes } = useQuote();
 
   const handleCarSelect = (carId) => {
     setSelectedCarId(carId);
+    // 차량 선택 시 색상/옵션 초기화
+    if (colors.length > 0) {
+      setSelectedColorCode(colors[0].code); // 첫 번째 색상
+    }
+    setSelectedOptionCodes([]); // 옵션 전부 해제
     nav("/config");
   };
 
