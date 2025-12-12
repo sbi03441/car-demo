@@ -158,6 +158,32 @@ body {
   text-decoration: none;
 }
 
+.admin-button {
+  background: rgba(255, 193, 7, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 193, 7, 0.5);
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.admin-button:hover {
+  background: rgba(255, 193, 7, 0.3);
+  border-color: rgba(255, 193, 7, 0.7);
+  text-decoration: none;
+}
+
+.admin-button.active {
+  background: rgba(255, 193, 7, 0.4);
+  border-color: rgba(255, 193, 7, 0.8);
+  text-decoration: none;
+}
+
 .auth-link {
   color: rgba(255, 255, 255, 0.85);
   text-decoration: none;

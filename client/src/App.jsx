@@ -15,7 +15,15 @@ import MyQuotesPage from "./pages/MyQuotesPage";
 import MyPage from "./pages/MyPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminFAQPage from "./pages/AdminFAQPage";
+import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 import "./App.css";
+
+// QuoteProvider가 필요한 페이지만 감싸는 래퍼 컴포넌트
+function QuoteRoutes({ children }) {
+  return <QuoteProvider>{children}</QuoteProvider>;
+}
 
 function AppContent() {
   const { loading } = useAuth();
@@ -30,55 +38,75 @@ function AppContent() {
   }
 
   return (
-    <QuoteProvider>
-      <div className="App">
-        <Navigation />
+    <div className="App">
+      <Navigation />
 
-          {/* <header className="app-header">
-            <h1>견적 내기</h1>
-            <p>지금 견적내기를 통해 예상 견적가를 확인해 보세요!</p>
-          </header> */}
+      {/* <header className="app-header">
+        <h1>견적 내기</h1>
+        <p>지금 견적내기를 통해 예상 견적가를 확인해 보세요!</p>
+      </header> */}
 
-          <main className="main-content">
-            <Routes>
-              <Route path="/" element={<Navigate to="/models" replace />} />
-              <Route path="/models" element={<ModelPage />} />
-              <Route path="/vehicles/:id" element={<VehicleDetailPage />} />
-              <Route path="/brands" element={<BrandsPage />} />
-              <Route path="/showrooms" element={<ShowroomPage />} />
-              <Route path="/faq" element={<FAQPage />} />
-              <Route path="/config" element={<ConfigPage />} />
-              <Route path="/summary" element={<SummaryPage />} />
+      <main className="main-content">
+        <Routes>
+          <Route path="/" element={<Navigate to="/models" replace />} />
 
-              {/* 인증 페이지 */}
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
+          {/* QuoteProvider가 필요한 페이지들 */}
+          <Route path="/models" element={<QuoteRoutes><ModelPage /></QuoteRoutes>} />
+          <Route path="/vehicles/:id" element={<QuoteRoutes><VehicleDetailPage /></QuoteRoutes>} />
+          <Route path="/config" element={<QuoteRoutes><ConfigPage /></QuoteRoutes>} />
+          <Route path="/summary" element={<QuoteRoutes><SummaryPage /></QuoteRoutes>} />
+          <Route
+            path="/my-quotes"
+            element={
+              <ProtectedRoute>
+                <QuoteRoutes><MyQuotesPage /></QuoteRoutes>
+              </ProtectedRoute>
+            }
+          />
 
-              {/* 보호된 페이지 */}
-              <Route
-                path="/my-quotes"
-                element={
-                  <ProtectedRoute>
-                    <MyQuotesPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/my-page"
-                element={
-                  <ProtectedRoute>
-                    <MyPage />
-                  </ProtectedRoute>
-                }
-              />
-            </Routes>
-          </main>
+          {/* QuoteProvider가 필요 없는 페이지들 */}
+          <Route path="/brands" element={<QuoteRoutes><BrandsPage /></QuoteRoutes>} />
+          <Route path="/showrooms" element={<QuoteRoutes><ShowroomPage /></QuoteRoutes>} />
+          <Route path="/faq" element={<QuoteRoutes><FAQPage /></QuoteRoutes>} />
 
-          <footer className="app-footer">
-            <p>© Demo</p>
-          </footer>
-        </div>
-    </QuoteProvider>
+          {/* 인증 페이지 */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+
+          {/* 보호된 페이지 */}
+          <Route
+            path="/my-page"
+            element={
+              <ProtectedRoute>
+                <MyPage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* 관리자 페이지 */}
+          <Route
+            path="/admin"
+            element={
+              <ProtectedAdminRoute>
+                <AdminDashboard />
+              </ProtectedAdminRoute>
+            }
+          />
+          <Route
+            path="/admin/faqs"
+            element={
+              <ProtectedAdminRoute>
+                <AdminFAQPage />
+              </ProtectedAdminRoute>
+            }
+          />
+        </Routes>
+      </main>
+
+      <footer className="app-footer">
+        <p>© Demo</p>
+      </footer>
+    </div>
   );
 }
 

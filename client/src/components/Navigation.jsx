@@ -68,6 +68,16 @@ export default function Navigation() {
           {isAuthenticated ? (
             // 로그인 상태
             <>
+              {user?.isAdmin && (
+                <NavLink
+                  to="/admin"
+                  className={({ isActive }) =>
+                    isActive ? "admin-button active" : "admin-button"
+                  }
+                >
+                  ⚙️ 관리자
+                </NavLink>
+              )}
               <NavLink
                 to="/my-page"
                 className={({ isActive }) =>
