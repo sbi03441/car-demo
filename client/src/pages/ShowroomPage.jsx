@@ -1,77 +1,67 @@
-import { useState } from "react";
-
-// 전시장 데이터
-const showrooms = [
-  {
-    id: 1,
-    name: "Car Demo 강남 전시장",
-    address: "서울특별시 강남구 테헤란로 123",
-    phone: "02-1234-5678",
-    hours: "평일 09:00 - 20:00, 주말 10:00 - 18:00",
-    services: ["시승 예약", "구매 상담", "금융 상담", "정비 서비스"],
-    image: "https://images.unsplash.com/photo-1562832135-14a35d25edef?w=800&h=600&fit=crop",
-    region: "서울"
-  },
-  {
-    id: 2,
-    name: "Car Demo 판교 전시장",
-    address: "경기도 성남시 분당구 판교역로 100",
-    phone: "031-2345-6789",
-    hours: "평일 09:00 - 20:00, 주말 10:00 - 18:00",
-    services: ["시승 예약", "구매 상담", "금융 상담"],
-    image: "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&h=600&fit=crop",
-    region: "경기"
-  },
-  {
-    id: 3,
-    name: "Car Demo 부산 전시장",
-    address: "부산광역시 해운대구 센텀중앙로 78",
-    phone: "051-3456-7890",
-    hours: "평일 09:00 - 20:00, 주말 10:00 - 18:00",
-    services: ["시승 예약", "구매 상담", "정비 서비스"],
-    image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&h=600&fit=crop",
-    region: "부산"
-  },
-  {
-    id: 4,
-    name: "Car Demo 대구 전시장",
-    address: "대구광역시 수성구 동대구로 456",
-    phone: "053-4567-8901",
-    hours: "평일 09:00 - 20:00, 주말 10:00 - 18:00",
-    services: ["시승 예약", "구매 상담", "금융 상담", "정비 서비스"],
-    image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=600&fit=crop",
-    region: "대구"
-  },
-  {
-    id: 5,
-    name: "Car Demo 인천 전시장",
-    address: "인천광역시 연수구 송도과학로 32",
-    phone: "032-5678-9012",
-    hours: "평일 09:00 - 20:00, 주말 10:00 - 18:00",
-    services: ["시승 예약", "구매 상담"],
-    image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop",
-    region: "인천"
-  },
-  {
-    id: 6,
-    name: "Car Demo 광주 전시장",
-    address: "광주광역시 서구 상무대로 789",
-    phone: "062-6789-0123",
-    hours: "평일 09:00 - 20:00, 주말 10:00 - 18:00",
-    services: ["시승 예약", "구매 상담", "금융 상담"],
-    image: "https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=800&h=600&fit=crop",
-    region: "광주"
-  }
-];
+import { useState, useEffect } from "react";
+import { getAllShowrooms } from "../services/showroomsService";
 
 const regions = ["전체", "서울", "경기", "부산", "대구", "인천", "광주"];
 
 export default function ShowroomPage() {
+  const [showrooms, setShowrooms] = useState([]);
   const [selectedRegion, setSelectedRegion] = useState("전체");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchShowrooms = async () => {
+      try {
+        setLoading(true);
+        const response = await getAllShowrooms();
+
+        if (response.success) {
+          // services 필드를 JSON 파싱하여 배열로 변환
+          const parsedShowrooms = response.data.map(showroom => ({
+            ...showroom,
+            services: typeof showroom.services === 'string'
+              ? JSON.parse(showroom.services)
+              : showroom.services,
+            image: showroom.imageUrl // imageUrl을 image로 매핑
+          }));
+          setShowrooms(parsedShowrooms);
+        } else {
+          setError('전시장 목록을 불러오는데 실패했습니다.');
+        }
+      } catch (err) {
+        console.error('전시장 목록 조회 오류:', err);
+        setError('전시장 목록을 불러오는 중 오류가 발생했습니다.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchShowrooms();
+  }, []);
 
   const filteredShowrooms = selectedRegion === "전체"
     ? showrooms
     : showrooms.filter(showroom => showroom.region === selectedRegion);
+
+  if (loading) {
+    return (
+      <div className="showroom-page">
+        <div style={{ textAlign: 'center', padding: '40px' }}>
+          <p>전시장 정보를 불러오는 중...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="showroom-page">
+        <div style={{ textAlign: 'center', padding: '40px' }}>
+          <p style={{ color: 'red' }}>{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="showroom-page">

@@ -10,6 +10,7 @@ DROP SEQUENCE colors_seq;
 DROP SEQUENCE options_seq;
 DROP SEQUENCE quotes_seq;
 DROP SEQUENCE quote_options_seq;
+DROP SEQUENCE showrooms_seq;
 
 -- 테이블 삭제 (재실행 시)
 DROP TABLE quote_options CASCADE CONSTRAINTS;
@@ -19,6 +20,7 @@ DROP TABLE colors CASCADE CONSTRAINTS;
 DROP TABLE car_features CASCADE CONSTRAINTS;
 DROP TABLE cars CASCADE CONSTRAINTS;
 DROP TABLE users CASCADE CONSTRAINTS;
+DROP TABLE showrooms CASCADE CONSTRAINTS;
 
 -- ========================================
 -- 1. USERS 테이블 (사용자)
@@ -195,6 +197,33 @@ END;
 /
 
 -- ========================================
+-- 8. SHOWROOMS 테이블 (전시장)
+-- ========================================
+CREATE TABLE showrooms (
+    id NUMBER PRIMARY KEY,
+    name VARCHAR2(200) NOT NULL,
+    address VARCHAR2(500) NOT NULL,
+    phone VARCHAR2(20) NOT NULL,
+    hours VARCHAR2(200) NOT NULL,
+    services VARCHAR2(1000),
+    image_url VARCHAR2(500),
+    region VARCHAR2(50) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE SEQUENCE showrooms_seq START WITH 1 INCREMENT BY 1;
+
+CREATE OR REPLACE TRIGGER showrooms_bir
+BEFORE INSERT ON showrooms
+FOR EACH ROW
+BEGIN
+  IF :NEW.id IS NULL THEN
+    SELECT showrooms_seq.NEXTVAL INTO :NEW.id FROM dual;
+  END IF;
+END;
+/
+
+-- ========================================
 -- 초기 데이터 삽입
 -- ========================================
 
@@ -271,6 +300,37 @@ INSERT INTO options (code, name, price) VALUES ('sunroof', '파노라마 선루�
 INSERT INTO options (code, name, price) VALUES ('hud', '헤드업 디스플레이', 900000);
 INSERT INTO options (code, name, price) VALUES ('sound', '프리미엄 사운드', 1200000);
 
+-- 전시장 데이터
+INSERT INTO showrooms (name, address, phone, hours, services, image_url, region)
+VALUES ('Car Demo 강남 전시장', '서울특별시 강남구 테헤란로 123', '02-1234-5678', '평일 09:00 - 20:00, 주말 10:00 - 18:00',
+        '["시승 예약","구매 상담","금융 상담","정비 서비스"]',
+        'https://images.unsplash.com/photo-1562832135-14a35d25edef?w=800&h=600&fit=crop', '서울');
+
+INSERT INTO showrooms (name, address, phone, hours, services, image_url, region)
+VALUES ('Car Demo 판교 전시장', '경기도 성남시 분당구 판교역로 100', '031-2345-6789', '평일 09:00 - 20:00, 주말 10:00 - 18:00',
+        '["시승 예약","구매 상담","금융 상담"]',
+        'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&h=600&fit=crop', '경기');
+
+INSERT INTO showrooms (name, address, phone, hours, services, image_url, region)
+VALUES ('Car Demo 부산 전시장', '부산광역시 해운대구 센텀중앙로 78', '051-3456-7890', '평일 09:00 - 20:00, 주말 10:00 - 18:00',
+        '["시승 예약","구매 상담","정비 서비스"]',
+        'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&h=600&fit=crop', '부산');
+
+INSERT INTO showrooms (name, address, phone, hours, services, image_url, region)
+VALUES ('Car Demo 대구 전시장', '대구광역시 수성구 동대구로 456', '053-4567-8901', '평일 09:00 - 20:00, 주말 10:00 - 18:00',
+        '["시승 예약","구매 상담","금융 상담","정비 서비스"]',
+        'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=600&fit=crop', '대구');
+
+INSERT INTO showrooms (name, address, phone, hours, services, image_url, region)
+VALUES ('Car Demo 인천 전시장', '인천광역시 연수구 송도과학로 32', '032-5678-9012', '평일 09:00 - 20:00, 주말 10:00 - 18:00',
+        '["시승 예약","구매 상담"]',
+        'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop', '인천');
+
+INSERT INTO showrooms (name, address, phone, hours, services, image_url, region)
+VALUES ('Car Demo 광주 전시장', '광주광역시 서구 상무대로 789', '062-6789-0123', '평일 09:00 - 20:00, 주말 10:00 - 18:00',
+        '["시승 예약","구매 상담","금융 상담"]',
+        'https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=800&h=600&fit=crop', '광주');
+
 COMMIT;
 
 -- ========================================
@@ -283,6 +343,7 @@ CREATE INDEX idx_quotes_user_id ON quotes(user_id);
 CREATE INDEX idx_quotes_car_id ON quotes(car_id);
 CREATE INDEX idx_quotes_created_at ON quotes(created_at);
 CREATE INDEX idx_quote_options_quote_id ON quote_options(quote_id);
+CREATE INDEX idx_showrooms_region ON showrooms(region);
 
 -- ========================================
 -- 스키마 생성 완료
