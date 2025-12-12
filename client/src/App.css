@@ -68,6 +68,33 @@ body {
   opacity: 0.8;
 }
 
+/* 햄버거 메뉴 버튼 */
+.hamburger-menu {
+  display: none;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 30px;
+  height: 25px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 10;
+}
+
+.hamburger-menu span {
+  width: 100%;
+  height: 3px;
+  background-color: white;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+/* 모바일 메뉴 래퍼 - 데스크톱에서는 그리드 레이아웃 유지 */
+.mobile-menu-wrapper {
+  display: contents;
+}
+
 .nav-menu {
   display: flex;
   gap: 8px;
@@ -196,13 +223,16 @@ body {
 }
 
 .auth-link:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
   color: white;
+  text-decoration: none;
 }
 
 .auth-link.active {
   background: rgba(255, 255, 255, 0.2);
   color: white;
+  text-decoration: none;
 }
 
 .auth-link.register {
@@ -213,6 +243,7 @@ body {
 .auth-link.register:hover {
   background: rgba(255, 255, 255, 0.25);
   border-color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
 }
 
 .nav-link {
@@ -229,12 +260,14 @@ body {
 .nav-link:hover {
   background: rgba(255, 255, 255, 0.1);
   color: white;
+  text-decoration: none;
 }
 
 .nav-link.active {
   background: rgba(255, 255, 255, 0.2);
   color: white;
   font-weight: 600;
+  text-decoration: none;
 }
 
 .nav-link.active::after {
@@ -577,29 +610,116 @@ input::placeholder {
 }
 
 /* 모바일 반응형 */
-@media (max-width: 768px) {
+@media (max-width: 1313px) {
   .nav-container {
     padding: 0 16px;
-    flex-direction: column;
     height: auto;
     padding-top: 12px;
     padding-bottom: 12px;
-    gap: 12px;
+    position: relative;
   }
 
   .nav-brand a {
     font-size: 1.1rem;
   }
 
+  /* 햄버거 메뉴 버튼 표시 */
+  .hamburger-menu {
+    display: flex;
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  /* 모바일 메뉴 래퍼 */
+  .mobile-menu-wrapper {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #000000;
+    flex-direction: column;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+  }
+
+  .mobile-menu-wrapper.mobile-open {
+    display: flex;
+  }
+
+  /* 모바일 메뉴 */
   .nav-menu {
+    display: flex;
     position: static;
-    transform: none;
-    gap: 4px;
+    flex-direction: column;
+    gap: 0;
+    padding: 10px 0 0 0;
+    background: transparent;
   }
 
   .nav-link {
-    padding: 6px 10px;
-    font-size: 0.85rem;
+    padding: 12px 20px;
+    font-size: 0.95rem;
+    width: 100%;
+    text-align: left;
+    border-radius: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+
+  .nav-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+
+  .nav-link.active {
+    color: white;
+  }
+
+  /* 인증 메뉴 */
+  .nav-auth {
+    display: flex;
+    position: static;
+    flex-direction: column;
+    gap: 0;
+    padding: 0 0 10px 0;
+    background: transparent;
+  }
+
+  .auth-link,
+  .mypage-button,
+  .admin-button {
+    padding: 12px 20px;
+    font-size: 0.95rem;
+    width: 100%;
+    text-align: left;
+    border-radius: 0;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    background: transparent;
+  }
+
+  .auth-link:hover,
+  .mypage-button:hover,
+  .admin-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+
+  .logout-button {
+    width: 100%;
+    text-align: left;
+    border-radius: 0;
+    padding: 12px 20px;
+    background: transparent;
+    color: white;
+  }
+
+  .logout-button:hover {
+    background: rgba(255, 255, 255, 0.1);
   }
 
   .main-content {
