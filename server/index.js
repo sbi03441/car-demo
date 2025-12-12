@@ -10,6 +10,7 @@ import quotesRoutes from './routes/quotes.routes.js';
 import adminRoutes from './routes/admin.routes.js';
 import showroomsRoutes from './routes/showrooms.routes.js';
 import brandsRoutes from './routes/brands.routes.js';
+import faqsRoutes from './routes/faqs.routes.js';
 
 dotenv.config();
 
@@ -59,6 +60,7 @@ app.use('/api/quotes', quotesRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/showrooms', showroomsRoutes);
 app.use('/api/brands', brandsRoutes);
+app.use('/api/faqs', faqsRoutes);
 
 // ========================================
 // Error Handling

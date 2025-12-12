@@ -374,6 +374,85 @@ VALUES (
     '[{"title":"신뢰","description":"투명하고 정직한 거래"},{"title":"전문성","description":"차량에 대한 깊은 이해와 전문 지식"},{"title":"고객만족","description":"고객의 니즈를 최우선으로"}]'
 );
 
+-- ========================================
+-- FAQ 테이블
+-- ========================================
+CREATE TABLE faqs (
+    id NUMBER PRIMARY KEY,
+    category VARCHAR2(100) NOT NULL,
+    question VARCHAR2(500) NOT NULL,
+    answer CLOB NOT NULL,
+    display_order NUMBER DEFAULT 0,
+    is_active NUMBER(1) DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- FAQ 시퀀스
+CREATE SEQUENCE faqs_seq START WITH 1 INCREMENT BY 1;
+
+-- FAQ 트리거 (자동 ID 생성)
+CREATE OR REPLACE TRIGGER faqs_before_insert
+BEFORE INSERT ON faqs
+FOR EACH ROW
+BEGIN
+  IF :NEW.id IS NULL THEN
+    SELECT faqs_seq.NEXTVAL INTO :NEW.id FROM DUAL;
+  END IF;
+END;
+/
+
+-- FAQ 데이터
+-- 구매 관련
+INSERT INTO faqs (category, question, answer, display_order) VALUES
+('구매 관련', '차량 구매 절차는 어떻게 되나요?', '차량 선택 → 견적 구성 → 상담 신청 → 계약 → 차량 인도 순서로 진행됩니다. 온라인으로 견적을 먼저 확인하신 후, 전시장 방문 또는 온라인 상담을 통해 구매를 진행하실 수 있습니다.', 1);
+
+INSERT INTO faqs (category, question, answer, display_order) VALUES
+('구매 관련', '온라인으로만 구매가 가능한가요?', '온라인으로 견적 확인 및 상담 신청이 가능하며, 최종 계약은 전시장 방문 또는 비대면 계약 중 선택하실 수 있습니다. 전시장에서 실차를 직접 확인하시는 것을 권장드립니다.', 2);
+
+INSERT INTO faqs (category, question, answer, display_order) VALUES
+('구매 관련', '시승은 어떻게 신청하나요?', '전시장 찾기 페이지에서 가까운 전시장을 선택하여 ''방문 예약'' 버튼을 클릭하시거나, 고객센터(1588-0000)로 연락주시면 시승 일정을 예약하실 수 있습니다.', 3);
+
+INSERT INTO faqs (category, question, answer, display_order) VALUES
+('구매 관련', '차량 인도는 얼마나 걸리나요?', '차량 모델 및 옵션에 따라 다르지만, 일반적으로 계약 후 4-8주 정도 소요됩니다. 재고 차량의 경우 더 빠른 인도가 가능할 수 있습니다.', 4);
+
+-- 금융/할부
+INSERT INTO faqs (category, question, answer, display_order) VALUES
+('금융/할부', '할부 구매가 가능한가요?', '네, 다양한 할부 프로그램을 제공하고 있습니다. 12개월부터 최대 60개월까지 선택 가능하며, 금리는 신용도에 따라 달라질 수 있습니다. 전시장 상담을 통해 맞춤형 금융 상담을 받으실 수 있습니다.', 5);
+
+INSERT INTO faqs (category, question, answer, display_order) VALUES
+('금융/할부', '리스와 할부의 차이가 무엇인가요?', '할부는 차량 소유권이 고객님께 있으며 매월 원금과 이자를 상환하는 방식입니다. 리스는 차량을 빌려 사용하는 개념으로 월 납입금이 할부보다 낮지만, 계약 종료 시 차량을 반납하거나 잔존가치를 지불해야 합니다.', 6);
+
+INSERT INTO faqs (category, question, answer, display_order) VALUES
+('금융/할부', '중도 상환 수수료가 있나요?', '할부 계약의 경우 중도 상환 수수료가 발생할 수 있습니다. 수수료율은 계약 조건에 따라 다르며, 상담 시 자세한 안내를 받으실 수 있습니다.', 7);
+
+-- 보증/서비스
+INSERT INTO faqs (category, question, answer, display_order) VALUES
+('보증/서비스', '차량 보증 기간은 어떻게 되나요?', '신차의 경우 기본 3년 또는 60,000km 보증이 제공되며, 파워트레인은 5년 또는 100,000km까지 보증됩니다. 차량 모델에 따라 보증 조건이 다를 수 있습니다.', 8);
+
+INSERT INTO faqs (category, question, answer, display_order) VALUES
+('보증/서비스', '정기 점검은 어디서 받을 수 있나요?', '전국 Car Demo 공식 서비스센터에서 정기 점검 및 수리 서비스를 제공합니다. 전시장 찾기 페이지에서 ''정비 서비스''를 제공하는 센터를 확인하실 수 있습니다.', 9);
+
+INSERT INTO faqs (category, question, answer, display_order) VALUES
+('보증/서비스', '무상 점검 기간은 얼마나 되나요?', '신차 구매 시 첫 1년 동안 2회의 무상 정기 점검이 제공됩니다. 점검 주기는 6개월 또는 10,000km 중 먼저 도래하는 시점입니다.', 10);
+
+-- 교환/환불
+INSERT INTO faqs (category, question, answer, display_order) VALUES
+('교환/환불', '차량 인도 후 교환이 가능한가요?', '차량 인도 후 7일 이내, 주행거리 500km 미만인 경우 차량 교환이 가능합니다. 단, 차량에 손상이 없어야 하며, 교환 사유에 따라 수수료가 발생할 수 있습니다.', 11);
+
+INSERT INTO faqs (category, question, answer, display_order) VALUES
+('교환/환불', '계약 취소는 어떻게 하나요?', '차량 인도 전 계약 취소 시 계약금 공제 후 환불이 가능합니다. 차량 생산이 시작된 경우 추가 위약금이 발생할 수 있으므로, 계약서 상의 취소 조항을 확인해 주시기 바랍니다.', 12);
+
+-- 기타
+INSERT INTO faqs (category, question, answer, display_order) VALUES
+('기타', '전국 어디서나 탁송이 가능한가요?', '네, 전국 어디든 차량 탁송 서비스를 제공하고 있습니다. 탁송 비용은 거리에 따라 차등 적용되며, 일부 지역의 경우 추가 일정이 소요될 수 있습니다.', 13);
+
+INSERT INTO faqs (category, question, answer, display_order) VALUES
+('기타', '법인 구매도 가능한가요?', '네, 법인 구매가 가능합니다. 법인 전용 할부 및 리스 프로그램도 제공하고 있으니, 사업자등록증을 지참하시어 전시장을 방문하시거나 법인 전용 상담 라인(1588-0001)으로 연락 주시기 바랍니다.', 14);
+
+INSERT INTO faqs (category, question, answer, display_order) VALUES
+('기타', '장애인 차량 구매 지원이 있나요?', '장애인 고객을 위한 특별 할인 프로그램과 편의 장치 지원이 제공됩니다. 장애인 등록증을 지참하시어 전시장에서 상담받으시면 자세한 혜택을 안내받으실 수 있습니다.', 15);
+
 COMMIT;
 
 -- ========================================
@@ -387,6 +466,8 @@ CREATE INDEX idx_quotes_car_id ON quotes(car_id);
 CREATE INDEX idx_quotes_created_at ON quotes(created_at);
 CREATE INDEX idx_quote_options_quote_id ON quote_options(quote_id);
 CREATE INDEX idx_showrooms_region ON showrooms(region);
+CREATE INDEX idx_faqs_category ON faqs(category);
+CREATE INDEX idx_faqs_is_active ON faqs(is_active);
 
 -- ========================================
 -- 스키마 생성 완료
