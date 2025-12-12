@@ -88,6 +88,10 @@ export async function execute(sql, binds = [], options = {}) {
     const result = await connection.execute(sql, binds, {
       outFormat: oracledb.OUT_FORMAT_OBJECT,
       autoCommit: true,
+      fetchInfo: {
+        // CLOB 타입을 문자열로 자동 변환
+        ...(options.fetchInfo || {})
+      },
       ...options
     });
     return result;

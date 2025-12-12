@@ -331,6 +331,49 @@ VALUES ('Car Demo 광주 전시장', '광주광역시 서구 상무대로 789', 
         '["시승 예약","구매 상담","금융 상담"]',
         'https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=800&h=600&fit=crop', '광주');
 
+-- ========================================
+-- 브랜드 테이블
+-- ========================================
+CREATE TABLE brands (
+    id NUMBER PRIMARY KEY,
+    name VARCHAR2(200) NOT NULL,
+    logo VARCHAR2(50),
+    tagline VARCHAR2(500),
+    description CLOB,
+    heritage VARCHAR2(500),
+    key_tech CLOB,  -- JSON 배열
+    philosophy VARCHAR2(500),
+    brand_values CLOB,  -- JSON 배열
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 브랜드 시퀀스
+CREATE SEQUENCE brands_seq START WITH 1 INCREMENT BY 1;
+
+-- 브랜드 트리거 (자동 ID 생성)
+CREATE OR REPLACE TRIGGER brands_before_insert
+BEFORE INSERT ON brands
+FOR EACH ROW
+BEGIN
+  IF :NEW.id IS NULL THEN
+    SELECT brands_seq.NEXTVAL INTO :NEW.id FROM DUAL;
+  END IF;
+END;
+/
+
+-- 브랜드 데이터
+INSERT INTO brands (name, logo, tagline, description, heritage, key_tech, philosophy, brand_values)
+VALUES (
+    'Car Demo',
+    '🚗',
+    '프리미엄 자동차의 새로운 기준',
+    'Car Demo는 고객에게 최상의 자동차 구매 경험을 제공하는 프리미엄 자동차 딜러입니다. 엄선된 프리미엄 차량과 전문적인 컨설팅으로 고객의 라이프스타일에 맞는 최적의 차량을 찾아드립니다.',
+    '신뢰와 품질을 바탕으로 한 프리미엄 자동차 서비스',
+    '["온라인 실시간 견적 시스템","전문 상담 서비스","투명한 가격 정책","편리한 탁송 서비스"]',
+    '고객의 꿈을 현실로 만드는 파트너',
+    '[{"title":"신뢰","description":"투명하고 정직한 거래"},{"title":"전문성","description":"차량에 대한 깊은 이해와 전문 지식"},{"title":"고객만족","description":"고객의 니즈를 최우선으로"}]'
+);
+
 COMMIT;
 
 -- ========================================

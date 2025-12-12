@@ -9,6 +9,7 @@ import carsRoutes from './routes/cars.routes.js';
 import quotesRoutes from './routes/quotes.routes.js';
 import adminRoutes from './routes/admin.routes.js';
 import showroomsRoutes from './routes/showrooms.routes.js';
+import brandsRoutes from './routes/brands.routes.js';
 
 dotenv.config();
 
@@ -57,6 +58,7 @@ app.use('/api/cars', carsRoutes);
 app.use('/api/quotes', quotesRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/showrooms', showroomsRoutes);
+app.use('/api/brands', brandsRoutes);
 
 // ========================================
 // Error Handling
