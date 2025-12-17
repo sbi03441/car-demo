@@ -14,11 +14,11 @@ export default function AdminDashboard() {
           <p>FAQ 추가, 수정, 삭제</p>
         </Link>
 
-        <div className="dashboard-card disabled">
+        <Link to="/admin/cars" className="dashboard-card">
           <div className="card-icon">🚗</div>
           <h2>차량 관리</h2>
-          <p>준비 중</p>
-        </div>
+          <p>차량 추가, 수정, 삭제</p>
+        </Link>
 
         <Link to="/admin/showrooms" className="dashboard-card">
           <div className="card-icon">🏢</div>

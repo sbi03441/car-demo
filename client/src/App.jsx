@@ -18,6 +18,8 @@ import RegisterPage from "./pages/RegisterPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminFAQPage from "./pages/AdminFAQPage";
 import AdminShowroomPage from "./pages/AdminShowroomPage";
+import AdminBrandPage from "./pages/AdminBrandPage";
+import AdminCarPage from "./pages/AdminCarPage";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 import "./App.css";
 
@@ -106,6 +108,22 @@ function AppContent() {
             element={
               <ProtectedAdminRoute>
                 <AdminShowroomPage />
+              </ProtectedAdminRoute>
+            }
+          />
+          <Route
+            path="/admin/brands"
+            element={
+              <ProtectedAdminRoute>
+                <AdminBrandPage />
+              </ProtectedAdminRoute>
+            }
+          />
+          <Route
+            path="/admin/cars"
+            element={
+              <ProtectedAdminRoute>
+                <AdminCarPage />
               </ProtectedAdminRoute>
             }
           />
