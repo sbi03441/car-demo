@@ -17,6 +17,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminFAQPage from "./pages/AdminFAQPage";
+import AdminShowroomPage from "./pages/AdminShowroomPage";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 import "./App.css";
 
@@ -97,6 +98,14 @@ function AppContent() {
             element={
               <ProtectedAdminRoute>
                 <AdminFAQPage />
+              </ProtectedAdminRoute>
+            }
+          />
+          <Route
+            path="/admin/showrooms"
+            element={
+              <ProtectedAdminRoute>
+                <AdminShowroomPage />
               </ProtectedAdminRoute>
             }
           />

@@ -20,11 +20,11 @@ export default function AdminDashboard() {
           <p>준비 중</p>
         </div>
 
-        <div className="dashboard-card disabled">
+        <Link to="/admin/showrooms" className="dashboard-card">
           <div className="card-icon">🏢</div>
           <h2>전시장 관리</h2>
-          <p>준비 중</p>
-        </div>
+          <p>전시장 추가, 수정, 삭제</p>
+        </Link>
 
         <div className="dashboard-card disabled">
           <div className="card-icon">🏷️</div>
