@@ -11,6 +11,7 @@ import adminRoutes from './routes/admin.routes.js';
 import showroomsRoutes from './routes/showrooms.routes.js';
 import brandsRoutes from './routes/brands.routes.js';
 import faqsRoutes from './routes/faqs.routes.js';
+import usersRoutes from './routes/users.routes.js';
 
 dotenv.config();
 
@@ -61,6 +62,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/showrooms', showroomsRoutes);
 app.use('/api/brands', brandsRoutes);
 app.use('/api/faqs', faqsRoutes);
+app.use('/api/users', usersRoutes);
 
 // ========================================
 // Error Handling

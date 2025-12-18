@@ -247,3 +247,39 @@ export const deleteBrand = async (id) => {
   const response = await api.delete(`/brands/admin/${id}`);
   return response.data;
 };
+
+// ========================================
+// 사용자 관리
+// ========================================
+
+/**
+ * 모든 사용자 조회 (관리자용)
+ */
+export const getUsers = async () => {
+  const response = await api.get('/users');
+  return response.data;
+};
+
+/**
+ * 사용자 역할 변경
+ */
+export const updateUserRole = async (id, isAdmin) => {
+  const response = await api.put(`/users/${id}/role`, { isAdmin });
+  return response.data;
+};
+
+/**
+ * 사용자 정보 수정
+ */
+export const updateUser = async (id, userData) => {
+  const response = await api.put(`/users/${id}`, userData);
+  return response.data;
+};
+
+/**
+ * 사용자 삭제
+ */
+export const deleteUser = async (id) => {
+  const response = await api.delete(`/users/${id}`);
+  return response.data;
+};

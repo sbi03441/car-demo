@@ -52,12 +52,35 @@ export async function verifyPassword(plainPassword, hashedPassword) {
  */
 export async function getAllUsers() {
   const sql = `
-    SELECT id, email, name, is_admin as "isAdmin", created_at as "createdAt"
+    SELECT
+      id,
+      email,
+      name,
+      is_admin as "isAdmin",
+      TO_CHAR(created_at, 'YYYY-MM-DD"T"HH24:MI:SS') as "createdAt"
     FROM users
     ORDER BY created_at DESC
   `;
   const result = await execute(sql);
   return result.rows;
+}
+
+/**
+ * 사용자 역할 변경 (관리자용)
+ */
+export async function updateUserRole(id, isAdmin) {
+  const sql = 'UPDATE users SET is_admin = :isAdmin WHERE id = :id';
+  await execute(sql, { id, isAdmin: isAdmin ? 1 : 0 });
+  return await findUserById(id);
+}
+
+/**
+ * 사용자 정보 업데이트 (관리자용)
+ */
+export async function updateUser(id, { name, email }) {
+  const sql = 'UPDATE users SET name = :name, email = :email WHERE id = :id';
+  await execute(sql, { id, name, email });
+  return await findUserById(id);
 }
 
 /**
@@ -74,5 +97,7 @@ export default {
   createUser,
   verifyPassword,
   getAllUsers,
+  updateUserRole,
+  updateUser,
   deleteUser
 };

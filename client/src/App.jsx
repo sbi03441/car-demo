@@ -21,6 +21,7 @@ import AdminShowroomPage from "./pages/AdminShowroomPage";
 import AdminBrandPage from "./pages/AdminBrandPage";
 import AdminCarPage from "./pages/AdminCarPage";
 import AdminColorOptionPage from "./pages/AdminColorOptionPage";
+import AdminUserPage from "./pages/AdminUserPage";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 import "./App.css";
 
@@ -133,6 +134,14 @@ function AppContent() {
             element={
               <ProtectedAdminRoute>
                 <AdminColorOptionPage />
+              </ProtectedAdminRoute>
+            }
+          />
+          <Route
+            path="/admin/users"
+            element={
+              <ProtectedAdminRoute>
+                <AdminUserPage />
               </ProtectedAdminRoute>
             }
           />

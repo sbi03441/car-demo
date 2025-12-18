@@ -38,11 +38,11 @@ export default function AdminDashboard() {
           <p>준비 중</p>
         </div>
 
-        <div className="dashboard-card disabled">
+        <Link to="/admin/users" className="dashboard-card">
           <div className="card-icon">👥</div>
           <h2>사용자 관리</h2>
-          <p>준비 중</p>
-        </div>
+          <p>사용자 추가, 수정, 삭제 및 권한 관리</p>
+        </Link>
 
         <div className="dashboard-card disabled">
           <div className="card-icon">📊</div>
