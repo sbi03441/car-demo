@@ -263,6 +263,134 @@ export async function deleteOption(id) {
   await execute(sql, { id });
 }
 
+/**
+ * 차량별 색상 관계 관리
+ */
+
+/**
+ * 특정 차량의 색상 목록 조회
+ */
+export async function getCarColors(carId) {
+  const sql = `
+    SELECT c.id, c.code, c.name, c.hex, c.price
+    FROM colors c
+    INNER JOIN car_colors cc ON c.id = cc.color_id
+    WHERE cc.car_id = :carId
+    ORDER BY c.id
+  `;
+  const result = await execute(sql, { carId });
+  return result.rows;
+}
+
+/**
+ * 차량에 색상 추가
+ */
+export async function addCarColor(carId, colorId) {
+  const sql = `
+    INSERT INTO car_colors (car_id, color_id)
+    VALUES (:carId, :colorId)
+  `;
+  await execute(sql, { carId, colorId });
+}
+
+/**
+ * 차량의 색상 삭제
+ */
+export async function removeCarColor(carId, colorId) {
+  const sql = `
+    DELETE FROM car_colors
+    WHERE car_id = :carId AND color_id = :colorId
+  `;
+  await execute(sql, { carId, colorId });
+}
+
+/**
+ * 차량의 모든 색상 관계 삭제
+ */
+export async function removeAllCarColors(carId) {
+  const sql = `DELETE FROM car_colors WHERE car_id = :carId`;
+  await execute(sql, { carId });
+}
+
+/**
+ * 차량 색상 관계 업데이트 (기존 삭제 후 새로 추가)
+ */
+export async function updateCarColors(carId, colorIds) {
+  // 기존 색상 관계 삭제
+  await removeAllCarColors(carId);
+
+  // 새 색상 관계 추가
+  if (colorIds && colorIds.length > 0) {
+    for (const colorId of colorIds) {
+      await addCarColor(carId, colorId);
+    }
+  }
+}
+
+/**
+ * 차량별 옵션 관계 관리
+ */
+
+/**
+ * 특정 차량의 옵션 목록 조회
+ */
+export async function getCarOptions(carId) {
+  const sql = `
+    SELECT o.id, o.code, o.name, o.price
+    FROM options o
+    INNER JOIN car_options co ON o.id = co.option_id
+    WHERE co.car_id = :carId
+    ORDER BY o.id
+  `;
+  const result = await execute(sql, { carId });
+  return result.rows;
+}
+
+/**
+ * 차량에 옵션 추가
+ */
+export async function addCarOption(carId, optionId) {
+  const sql = `
+    INSERT INTO car_options (car_id, option_id)
+    VALUES (:carId, :optionId)
+  `;
+  await execute(sql, { carId, optionId });
+}
+
+/**
+ * 차량의 옵션 삭제
+ */
+export async function removeCarOption(carId, optionId) {
+  const sql = `
+    DELETE FROM car_options
+    WHERE car_id = :carId AND option_id = :optionId
+  `;
+  await execute(sql, { carId, optionId });
+}
+
+/**
+ * 차량의 모든 옵션 관계 삭제
+ */
+export async function removeAllCarOptions(carId) {
+  const sql = `DELETE FROM car_options WHERE car_id = :carId`;
+  await execute(sql, { carId });
+}
+
+/**
+ * 차량 옵션 관계 업데이트 (기존 삭제 후 새로 추가)
+ */
+export async function updateCarOptions(carId, optionIds) {
+  // 기존 옵션 관계 삭제
+  await removeAllCarOptions(carId);
+
+  // 새 옵션 관계 추가
+  if (optionIds && optionIds.length > 0) {
+    for (const optionId of optionIds) {
+      await addCarOption(carId, optionId);
+    }
+  }
+}
+
 export default {
   getAllCars,
   getCarById,
@@ -276,5 +404,15 @@ export default {
   getAllOptions,
   createOption,
   updateOption,
-  deleteOption
+  deleteOption,
+  getCarColors,
+  addCarColor,
+  removeCarColor,
+  removeAllCarColors,
+  updateCarColors,
+  getCarOptions,
+  addCarOption,
+  removeCarOption,
+  removeAllCarOptions,
+  updateCarOptions
 };

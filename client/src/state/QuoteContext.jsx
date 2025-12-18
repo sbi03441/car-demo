@@ -1,6 +1,6 @@
 // src/state/QuoteContext.jsx
 import { createContext, useContext, useMemo, useState, useEffect } from "react";
-import { getAllCars, getAllColors, getAllOptions } from "../services/carsService";
+import { getAllCars, getAllColors, getAllOptions, getCarColors, getCarOptions } from "../services/carsService";
 
 const QuoteCtx = createContext(null);
 export const useQuote = () => useContext(QuoteCtx);
@@ -36,23 +36,15 @@ export function QuoteProvider({ children }) {
 
         console.log('🔄 백엔드에서 데이터 로딩 시작...');
 
-        // 병렬로 API 호출
-        const [carsRes, colorsRes, optionsRes] = await Promise.all([
-          getAllCars(),
-          getAllColors(),
-          getAllOptions()
-        ]);
+        // 차량 목록만 먼저 로드 (색상/옵션은 차량 선택 후 로드)
+        const carsRes = await getAllCars();
 
         console.log('✅ API 응답 받음:', {
-          cars: carsRes.data?.length || 0,
-          colors: colorsRes.data?.length || 0,
-          options: optionsRes.data?.length || 0
+          cars: carsRes.data?.length || 0
         });
 
         // API 응답에서 데이터 추출
         const carsData = carsRes.data || [];
-        const colorsData = colorsRes.data || [];
-        const optionsData = optionsRes.data || [];
 
         // Oracle DB는 대문자 키를 반환할 수 있으므로 정규화
         const normalizedCars = carsData.map(car => ({
@@ -70,6 +62,62 @@ export function QuoteProvider({ children }) {
           features: car.features || []
         }));
 
+        setCars(normalizedCars);
+
+        console.log('✅ 데이터 정규화 완료:', {
+          cars: normalizedCars.length
+        });
+        console.log('📊 로드된 차량:', normalizedCars.map(c => c.name));
+
+        // 기본값 설정 (로컬 스토리지에서 복원하거나 첫 번째 항목 선택)
+        const saved = localStorage.getItem("quoteState");
+        if (saved) {
+          try {
+            const s = JSON.parse(saved);
+            setSelectedCarId(s.selectedCarId ?? normalizedCars[0]?.id);
+            setSelectedColorCode(s.selectedColorCode ?? null);
+            setSelectedOptionCodes(s.selectedOptionCodes ?? []);
+            setDiscount(s.discount ?? { name: "", amount: 0 });
+            setDelivery(s.delivery ?? { region: "", fee: 0 });
+          } catch (e) {
+            // 로컬 스토리지 파싱 실패 시 기본값
+            setSelectedCarId(normalizedCars[0]?.id);
+            setSelectedColorCode(null);
+          }
+        } else {
+          // 로컬 스토리지에 저장된 값이 없으면 기본값
+          setSelectedCarId(normalizedCars[0]?.id);
+          setSelectedColorCode(null);
+        }
+
+        setLoading(false);
+      } catch (err) {
+        console.error("데이터 로드 실패:", err);
+        setError(err.message || "데이터를 불러오는데 실패했습니다.");
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  // 선택된 차량이 변경되면 해당 차량의 색상/옵션만 로드
+  useEffect(() => {
+    const loadCarSpecificData = async () => {
+      if (!selectedCarId) return;
+
+      try {
+        console.log(`🔄 차량 ID ${selectedCarId}의 색상/옵션 로딩...`);
+
+        const [colorsRes, optionsRes] = await Promise.all([
+          getCarColors(selectedCarId),
+          getCarOptions(selectedCarId)
+        ]);
+
+        const colorsData = colorsRes.data || [];
+        const optionsData = optionsRes.data || [];
+
+        // 데이터 정규화
         const normalizedColors = colorsData.map(color => ({
           id: color.ID || color.id,
           code: color.CODE || color.code,
@@ -85,48 +133,35 @@ export function QuoteProvider({ children }) {
           price: option.PRICE || option.price || 0
         }));
 
-        setCars(normalizedCars);
         setColors(normalizedColors);
         setOptions(normalizedOptions);
 
-        console.log('✅ 데이터 정규화 완료:', {
-          cars: normalizedCars.length,
+        console.log(`✅ 차량별 데이터 로드 완료:`, {
           colors: normalizedColors.length,
           options: normalizedOptions.length
         });
-        console.log('📊 로드된 차량:', normalizedCars.map(c => c.name));
 
-        // 기본값 설정 (로컬 스토리지에서 복원하거나 첫 번째 항목 선택)
-        const saved = localStorage.getItem("quoteState");
-        if (saved) {
-          try {
-            const s = JSON.parse(saved);
-            setSelectedCarId(s.selectedCarId ?? normalizedCars[0]?.id);
-            setSelectedColorCode(s.selectedColorCode ?? normalizedColors[0]?.code);
-            setSelectedOptionCodes(s.selectedOptionCodes ?? []);
-            setDiscount(s.discount ?? { name: "", amount: 0 });
-            setDelivery(s.delivery ?? { region: "", fee: 0 });
-          } catch (e) {
-            // 로컬 스토리지 파싱 실패 시 기본값
-            setSelectedCarId(normalizedCars[0]?.id);
-            setSelectedColorCode(normalizedColors[0]?.code);
-          }
-        } else {
-          // 로컬 스토리지에 저장된 값이 없으면 기본값
-          setSelectedCarId(normalizedCars[0]?.id);
-          setSelectedColorCode(normalizedColors[0]?.code);
+        // 기존 선택된 색상/옵션이 새 목록에 없으면 초기화
+        if (!normalizedColors.find(c => c.code === selectedColorCode)) {
+          setSelectedColorCode(normalizedColors[0]?.code || null);
         }
 
-        setLoading(false);
-      } catch (err) {
-        console.error("데이터 로드 실패:", err);
-        setError(err.message || "데이터를 불러오는데 실패했습니다.");
-        setLoading(false);
+        // 기존 선택된 옵션 중 새 목록에 없는 것은 제거
+        const availableOptionCodes = normalizedOptions.map(o => o.code);
+        setSelectedOptionCodes(prev =>
+          prev.filter(code => availableOptionCodes.includes(code))
+        );
+
+      } catch (error) {
+        console.error('차량별 색상/옵션 로드 실패:', error);
+        // 실패 시 빈 배열로 설정
+        setColors([]);
+        setOptions([]);
       }
     };
 
-    loadData();
-  }, []);
+    loadCarSpecificData();
+  }, [selectedCarId]);
 
   // 선택 값들을 로컬 스토리지에 저장
   useEffect(() => {

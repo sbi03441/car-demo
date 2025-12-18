@@ -3,7 +3,13 @@ import {
   getAdminCars,
   createCar,
   updateCar,
-  deleteCar
+  deleteCar,
+  getAdminColors,
+  getAdminOptions,
+  getCarColors,
+  getCarOptions,
+  updateCarColors,
+  updateCarOptions
 } from '../services/adminService';
 import './AdminCarPage.css';
 
@@ -26,20 +32,45 @@ export default function AdminCarPage() {
     features: ''
   });
 
+  // 색상/옵션 관리 모달
+  const [isColorOptionModalOpen, setIsColorOptionModalOpen] = useState(false);
+  const [selectedCarId, setSelectedCarId] = useState(null);
+  const [selectedCarName, setSelectedCarName] = useState('');
+  const [allColors, setAllColors] = useState([]);
+  const [allOptions, setAllOptions] = useState([]);
+  const [selectedColorIds, setSelectedColorIds] = useState([]);
+  const [selectedOptionIds, setSelectedOptionIds] = useState([]);
+
   useEffect(() => {
-    loadCars();
+    loadData();
   }, []);
+
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      const [carsResponse, colorsResponse, optionsResponse] = await Promise.all([
+        getAdminCars(),
+        getAdminColors(),
+        getAdminOptions()
+      ]);
+      setCars(carsResponse.data);
+      setAllColors(colorsResponse.data);
+      setAllOptions(optionsResponse.data);
+    } catch (error) {
+      console.error('데이터 로드 실패:', error);
+      alert('데이터를 불러오는데 실패했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const loadCars = async () => {
     try {
-      setLoading(true);
       const response = await getAdminCars();
       setCars(response.data);
     } catch (error) {
       console.error('차량 목록 로드 실패:', error);
       alert('차량 목록을 불러오는데 실패했습니다.');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -142,6 +173,77 @@ export default function AdminCarPage() {
     }
   };
 
+  // 색상/옵션 모달 열기
+  const handleOpenColorOptionModal = async (car) => {
+    try {
+      setSelectedCarId(car.ID);
+      setSelectedCarName(car.NAME);
+
+      // 해당 차량의 색상/옵션 조회
+      const [colorsResponse, optionsResponse] = await Promise.all([
+        getCarColors(car.ID),
+        getCarOptions(car.ID)
+      ]);
+
+      // ID 배열로 변환
+      const colorIds = colorsResponse.data.map(c => c.ID);
+      const optionIds = optionsResponse.data.map(o => o.ID);
+
+      setSelectedColorIds(colorIds);
+      setSelectedOptionIds(optionIds);
+      setIsColorOptionModalOpen(true);
+    } catch (error) {
+      console.error('차량 색상/옵션 로드 실패:', error);
+      alert('차량 색상/옵션을 불러오는데 실패했습니다.');
+    }
+  };
+
+  // 색상/옵션 모달 닫기
+  const handleCloseColorOptionModal = () => {
+    setIsColorOptionModalOpen(false);
+    setSelectedCarId(null);
+    setSelectedCarName('');
+    setSelectedColorIds([]);
+    setSelectedOptionIds([]);
+  };
+
+  // 색상 체크박스 토글
+  const handleToggleColor = (colorId) => {
+    setSelectedColorIds(prev => {
+      if (prev.includes(colorId)) {
+        return prev.filter(id => id !== colorId);
+      } else {
+        return [...prev, colorId];
+      }
+    });
+  };
+
+  // 옵션 체크박스 토글
+  const handleToggleOption = (optionId) => {
+    setSelectedOptionIds(prev => {
+      if (prev.includes(optionId)) {
+        return prev.filter(id => id !== optionId);
+      } else {
+        return [...prev, optionId];
+      }
+    });
+  };
+
+  // 색상/옵션 저장
+  const handleSaveColorOptions = async () => {
+    try {
+      await Promise.all([
+        updateCarColors(selectedCarId, selectedColorIds),
+        updateCarOptions(selectedCarId, selectedOptionIds)
+      ]);
+      alert('차량의 색상/옵션이 업데이트되었습니다.');
+      handleCloseColorOptionModal();
+    } catch (error) {
+      console.error('색상/옵션 업데이트 실패:', error);
+      alert('색상/옵션 업데이트에 실패했습니다.');
+    }
+  };
+
   if (loading) {
     return <div className="admin-car-page">로딩 중...</div>;
   }
@@ -181,6 +283,12 @@ export default function AdminCarPage() {
                     onClick={() => handleOpenModal(car)}
                   >
                     수정
+                  </button>
+                  <button
+                    className="btn-color-option"
+                    onClick={() => handleOpenColorOptionModal(car)}
+                  >
+                    색상/옵션
                   </button>
                   <button
                     className="btn-delete"
@@ -331,6 +439,66 @@ export default function AdminCarPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* 색상/옵션 관리 모달 */}
+      {isColorOptionModalOpen && (
+        <div className="modal-overlay" onClick={handleCloseColorOptionModal}>
+          <div className="modal-content color-option-modal" onClick={(e) => e.stopPropagation()}>
+            <h2>{selectedCarName} - 색상/옵션 설정</h2>
+
+            <div className="color-option-sections">
+              {/* 색상 섹션 */}
+              <div className="section">
+                <h3>사용 가능한 색상</h3>
+                <div className="checkbox-grid">
+                  {allColors.map((color) => (
+                    <label key={color.ID} className="checkbox-item">
+                      <input
+                        type="checkbox"
+                        checked={selectedColorIds.includes(color.ID)}
+                        onChange={() => handleToggleColor(color.ID)}
+                      />
+                      <div className="color-info">
+                        <div
+                          className="color-preview-small"
+                          style={{ backgroundColor: color.HEX }}
+                        ></div>
+                        <span>{color.NAME}</span>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* 옵션 섹션 */}
+              <div className="section">
+                <h3>사용 가능한 옵션</h3>
+                <div className="checkbox-grid">
+                  {allOptions.map((option) => (
+                    <label key={option.ID} className="checkbox-item">
+                      <input
+                        type="checkbox"
+                        checked={selectedOptionIds.includes(option.ID)}
+                        onChange={() => handleToggleOption(option.ID)}
+                      />
+                      <span>{option.NAME}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="form-actions">
+              <button type="button" className="btn-cancel" onClick={handleCloseColorOptionModal}>
+                취소
+              </button>
+              <button type="button" className="btn-submit" onClick={handleSaveColorOptions}>
+                저장
+              </button>
+            </div>
           </div>
         </div>
       )}

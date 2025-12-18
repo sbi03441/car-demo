@@ -108,6 +108,110 @@ export const deleteCar = async (id) => {
   return response.data;
 };
 
+/**
+ * 특정 차량의 색상 목록 조회
+ */
+export const getCarColors = async (carId) => {
+  const response = await api.get(`/cars/${carId}/colors`);
+  return response.data;
+};
+
+/**
+ * 차량의 색상 관계 업데이트
+ */
+export const updateCarColors = async (carId, colorIds) => {
+  const response = await api.put(`/cars/${carId}/colors`, { colorIds });
+  return response.data;
+};
+
+/**
+ * 특정 차량의 옵션 목록 조회
+ */
+export const getCarOptions = async (carId) => {
+  const response = await api.get(`/cars/${carId}/options`);
+  return response.data;
+};
+
+/**
+ * 차량의 옵션 관계 업데이트
+ */
+export const updateCarOptions = async (carId, optionIds) => {
+  const response = await api.put(`/cars/${carId}/options`, { optionIds });
+  return response.data;
+};
+
+// ========================================
+// 색상 관리
+// ========================================
+
+/**
+ * 모든 색상 조회
+ */
+export const getAdminColors = async () => {
+  const response = await api.get('/cars/data/colors');
+  return response.data;
+};
+
+/**
+ * 색상 생성
+ */
+export const createColor = async (colorData) => {
+  const response = await api.post('/cars/colors/admin', colorData);
+  return response.data;
+};
+
+/**
+ * 색상 수정
+ */
+export const updateColor = async (id, colorData) => {
+  const response = await api.put(`/cars/colors/admin/${id}`, colorData);
+  return response.data;
+};
+
+/**
+ * 색상 삭제
+ */
+export const deleteColor = async (id) => {
+  const response = await api.delete(`/cars/colors/admin/${id}`);
+  return response.data;
+};
+
+// ========================================
+// 옵션 관리
+// ========================================
+
+/**
+ * 모든 옵션 조회
+ */
+export const getAdminOptions = async () => {
+  const response = await api.get('/cars/data/options');
+  return response.data;
+};
+
+/**
+ * 옵션 생성
+ */
+export const createOption = async (optionData) => {
+  const response = await api.post('/cars/options/admin', optionData);
+  return response.data;
+};
+
+/**
+ * 옵션 수정
+ */
+export const updateOption = async (id, optionData) => {
+  const response = await api.put(`/cars/options/admin/${id}`, optionData);
+  return response.data;
+};
+
+/**
+ * 옵션 삭제
+ */
+export const deleteOption = async (id) => {
+  const response = await api.delete(`/cars/options/admin/${id}`);
+  return response.data;
+};
+
 // ========================================
 // 브랜드 관리
 // ========================================

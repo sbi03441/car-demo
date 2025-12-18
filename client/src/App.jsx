@@ -20,6 +20,7 @@ import AdminFAQPage from "./pages/AdminFAQPage";
 import AdminShowroomPage from "./pages/AdminShowroomPage";
 import AdminBrandPage from "./pages/AdminBrandPage";
 import AdminCarPage from "./pages/AdminCarPage";
+import AdminColorOptionPage from "./pages/AdminColorOptionPage";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 import "./App.css";
 
@@ -124,6 +125,14 @@ function AppContent() {
             element={
               <ProtectedAdminRoute>
                 <AdminCarPage />
+              </ProtectedAdminRoute>
+            }
+          />
+          <Route
+            path="/admin/colors-options"
+            element={
+              <ProtectedAdminRoute>
+                <AdminColorOptionPage />
               </ProtectedAdminRoute>
             }
           />

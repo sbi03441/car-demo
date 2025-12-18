@@ -32,3 +32,21 @@ export const getAllOptions = async () => {
   const response = await api.get('/cars/data/options');
   return response.data;
 };
+
+/**
+ * 특정 차량의 사용 가능한 색상 조회
+ * @param {number} carId - 차량 ID
+ */
+export const getCarColors = async (carId) => {
+  const response = await api.get(`/cars/${carId}/available-colors`);
+  return response.data;
+};
+
+/**
+ * 특정 차량의 사용 가능한 옵션 조회
+ * @param {number} carId - 차량 ID
+ */
+export const getCarOptions = async (carId) => {
+  const response = await api.get(`/cars/${carId}/available-options`);
+  return response.data;
+};

@@ -469,6 +469,67 @@ CREATE INDEX idx_showrooms_region ON showrooms(region);
 CREATE INDEX idx_faqs_category ON faqs(category);
 CREATE INDEX idx_faqs_is_active ON faqs(is_active);
 
+-- 1. 차량별 색상 연결 테이블 생성
+CREATE TABLE car_colors (
+  id NUMBER PRIMARY KEY,
+  car_id NUMBER NOT NULL,
+  color_id NUMBER NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_car_colors_car FOREIGN KEY (car_id) REFERENCES cars(id) ON DELETE CASCADE,
+  CONSTRAINT fk_car_colors_color FOREIGN KEY (color_id) REFERENCES colors(id) ON DELETE CASCADE,
+  CONSTRAINT uk_car_color UNIQUE (car_id, color_id)
+);
+
+-- 2. 차량별 색상 시퀀스 생성
+CREATE SEQUENCE car_colors_seq START WITH 1 INCREMENT BY 1;
+
+-- 3. 차량별 색상 트리거 생성
+CREATE OR REPLACE TRIGGER car_colors_bir
+BEFORE INSERT ON car_colors
+FOR EACH ROW
+BEGIN
+  IF :NEW.id IS NULL THEN
+    SELECT car_colors_seq.NEXTVAL INTO :NEW.id FROM DUAL;
+  END IF;
+END;
+/
+
+-- 4. 차량별 옵션 연결 테이블 생성
+CREATE TABLE car_options (
+  id NUMBER PRIMARY KEY,
+  car_id NUMBER NOT NULL,
+  option_id NUMBER NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_car_options_car FOREIGN KEY (car_id) REFERENCES cars(id) ON DELETE CASCADE,
+  CONSTRAINT fk_car_options_option FOREIGN KEY (option_id) REFERENCES options(id) ON DELETE CASCADE,
+  CONSTRAINT uk_car_option UNIQUE (car_id, option_id)
+);
+
+-- 5. 차량별 옵션 시퀀스 생성
+CREATE SEQUENCE car_options_seq START WITH 1 INCREMENT BY 1;
+
+-- 6. 차량별 옵션 트리거 생성
+CREATE OR REPLACE TRIGGER car_options_bir
+BEFORE INSERT ON car_options
+FOR EACH ROW
+BEGIN
+  IF :NEW.id IS NULL THEN
+    SELECT car_options_seq.NEXTVAL INTO :NEW.id FROM DUAL;
+  END IF;
+END;
+/
+
+-- 7. 인덱스 생성
+CREATE INDEX idx_car_colors_car ON car_colors(car_id);
+
+CREATE INDEX idx_car_colors_color ON car_colors(color_id);
+
+CREATE INDEX idx_car_options_car ON car_options(car_id);
+
+CREATE INDEX idx_car_options_option ON car_options(option_id);
+
+
+
 -- ========================================
 -- 스키마 생성 완료
 -- ========================================

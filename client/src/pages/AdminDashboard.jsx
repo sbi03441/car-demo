@@ -26,6 +26,12 @@ export default function AdminDashboard() {
           <p>전시장 추가, 수정, 삭제</p>
         </Link>
 
+        <Link to="/admin/colors-options" className="dashboard-card">
+          <div className="card-icon">🎨</div>
+          <h2>색상 / 옵션 관리</h2>
+          <p>색상 및 옵션 추가, 수정, 삭제</p>
+        </Link>
+
         <div className="dashboard-card disabled">
           <div className="card-icon">🏷️</div>
           <h2>브랜드 관리</h2>
